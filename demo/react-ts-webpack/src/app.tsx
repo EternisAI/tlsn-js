@@ -4,14 +4,14 @@ import * as Comlink from 'comlink';
 import { Watch } from 'react-loader-spinner';
 import {
   Prover as TProver,
-  NotarizedSession as TNotarizedSession,
+  SignedSession as TSignedSession,
   TlsProof as TTlsProof,
   Commit,
   NotaryServer,
   ProofData,
 } from 'tlsn-js';
 
-const { init, Prover, NotarizedSession, TlsProof }: any = Comlink.wrap(
+const { init, Prover, SignedSession, TlsProof }: any = Comlink.wrap(
   new Worker(new URL('./worker.ts', import.meta.url)),
 );
 
@@ -50,40 +50,13 @@ function App(): ReactElement {
     console.timeEnd('submit');
     console.log(resp);
 
-    console.time('transcript');
-    const transcript = await prover.transcript();
-    console.log(transcript);
-    console.timeEnd('transcript');
-    console.time('commit');
-    const commit: Commit = {
-      sent: [
-        transcript.ranges.sent.info!,
-        transcript.ranges.sent.headers!['content-type'],
-        transcript.ranges.sent.headers!['host'],
-        ...transcript.ranges.sent.lineBreaks,
-      ],
-      recv: [
-        transcript.ranges.recv.info!,
-        transcript.ranges.recv.headers!['server'],
-        transcript.ranges.recv.headers!['date'],
-        transcript.ranges.recv.json!['name'],
-        transcript.ranges.recv.json!['gender'],
-        ...transcript.ranges.recv.lineBreaks,
-      ],
-    };
-    console.log(commit);
-    const session = await prover.notarize(commit);
-    console.timeEnd('commit');
-    console.time('proof');
+    const session = await prover.notarize();
 
-    const notarizedSession = (await new NotarizedSession(
+    const signedSession = (await new SignedSession(
       session,
-    )) as TNotarizedSession;
+    )) as TSignedSession;
+    console.log("Signed Session hex:", signedSession.serialize());
 
-    const proofHex = await notarizedSession.proof(commit);
-
-    console.timeEnd('proof');
-    setProofHex(proofHex);
   }, [setProofHex, setProcessing]);
 
   const onAltClick = useCallback(async () => {
@@ -117,11 +90,6 @@ function App(): ReactElement {
         const proof = (await new TlsProof(proofHex)) as TTlsProof;
         const notary = NotaryServer.from(`http://localhost:7047`);
         const notaryKey = await notary.publicKey();
-        const proofData = await proof.verify({
-          typ: 'P256',
-          key: notaryKey,
-        });
-        setResult(proofData);
         setProcessing(false);
       }
     })();

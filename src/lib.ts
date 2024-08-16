@@ -3,7 +3,7 @@ import initWasm, {
   init_logging,
   LoggingLevel,
   LoggingConfig,
-  NotarizedSession as WasmNotarizedSession,
+  SignedSession as WasmSignedSession,
   Transcript,
   TlsProof as WasmTlsProof,
   type Commit,
@@ -13,10 +13,8 @@ import initWasm, {
   type ProverConfig,
   type Method,
   VerifierConfig,
-  VerifierData,
-  NotaryPublicKey,
 } from '../wasm/pkg/tlsn_wasm';
-import { arrayToHex, processTranscript, expect, headerToMap } from './utils';
+import { arrayToHex, expect, headerToMap } from './utils';
 import type { ParsedTranscriptData, ProofData } from './types';
 
 let LOGGING_LEVEL: LoggingLevel = 'Info';
@@ -103,18 +101,7 @@ export class Prover {
       body,
     });
 
-    const transcript = prover.transcript();
-
-    const commit = _commit || {
-      sent: [{ start: 0, end: transcript.sent.length }],
-      recv: [{ start: 0, end: transcript.recv.length }],
-    };
-
-    const session = await prover.notarize(commit);
-
-    const tlsProof = await session.proof(commit);
-
-    return tlsProof.serialize();
+    return await prover.notarize();
   }
 
   constructor(config: {
@@ -144,24 +131,6 @@ export class Prover {
     return this.#prover.setup(verifierUrl);
   }
 
-  async transcript(): Promise<{
-    sent: string;
-    recv: string;
-    ranges: { recv: ParsedTranscriptData; sent: ParsedTranscriptData };
-  }> {
-    const transcript = this.#prover.transcript();
-    const recv = Buffer.from(transcript.recv).toString();
-    const sent = Buffer.from(transcript.sent).toString();
-    return {
-      recv,
-      sent,
-      ranges: {
-        recv: processTranscript(recv),
-        sent: processTranscript(sent),
-      },
-    };
-  }
-
   async sendRequest(
     wsProxyUrl: string,
     request: {
@@ -173,6 +142,7 @@ export class Prover {
   ): Promise<{
     status: number;
     headers: { [key: string]: string };
+    body?: string,
   }> {
     const { url, method = 'GET', headers = {}, body } = request;
     const hostname = new URL(url).hostname;
@@ -199,12 +169,13 @@ export class Prover {
         },
         {},
       ),
+      body: resp.body,
     };
   }
 
-  async notarize(commit: Commit): Promise<string> {
-    const notarizedSession = await this.#prover.notarize(commit);
-    return arrayToHex(notarizedSession.serialize());
+  async notarize(): Promise<string> {
+    const signedSession = await this.#prover.notarize();
+    return arrayToHex(signedSession.serialize());
   }
 }
 
@@ -221,32 +192,22 @@ export class Verifier {
     return this.#config.id;
   }
 
-  async verify(): Promise<VerifierData> {
-    return this.#verifier.verify();
-  }
-
   async connect(proverUrl: string): Promise<void> {
     return this.#verifier.connect(proverUrl);
   }
 }
 
-export class NotarizedSession {
-  #session: WasmNotarizedSession;
+export class SignedSession {
+  #session: WasmSignedSession;
 
   constructor(serializedSessionHex: string) {
-    this.#session = WasmNotarizedSession.deserialize(
+    this.#session = WasmSignedSession.deserialize(
       new Uint8Array(Buffer.from(serializedSessionHex, 'hex')),
     );
   }
 
   async free() {
     return this.#session.free();
-  }
-
-  async proof(reveal: Reveal) {
-    const proof = this.#session.proof(reveal);
-    console.log(proof);
-    return arrayToHex(proof.serialize());
   }
 
   async serialize() {
@@ -269,29 +230,6 @@ export class TlsProof {
 
   async serialize() {
     return arrayToHex(this.#proof.serialize());
-  }
-
-  async verify(
-    notaryPublicKey: NotaryPublicKey,
-    redactedSymbol = '*',
-  ): Promise<ProofData> {
-    const { received, received_auth_ranges, sent, ...rest } =
-      this.#proof.verify(notaryPublicKey);
-
-    return {
-      ...rest,
-      recv_auth_ranges: received_auth_ranges,
-      recv: received.reduce((recv: string, num) => {
-        recv =
-          recv + (num === 0 ? redactedSymbol : Buffer.from([num]).toString());
-        return recv;
-      }, ''),
-      sent: sent.reduce((sent: string, num) => {
-        sent =
-          sent + (num === 0 ? redactedSymbol : Buffer.from([num]).toString());
-        return sent;
-      }, ''),
-    };
   }
 }
 
