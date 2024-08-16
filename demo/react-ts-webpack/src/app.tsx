@@ -55,7 +55,7 @@ function App(): ReactElement {
     const signedSession = (await new SignedSession(
       session,
     )) as TSignedSession;
-    console.log("Signed Session hex:", signedSession.serialize());
+    console.log("Signed Session hex:", await signedSession.serialize());
 
   }, [setProofHex, setProcessing]);
 
