@@ -8,7 +8,7 @@ import {
   NotaryServer,
   ProofData,
 } from 'tlsn-js';
-
+import { requests } from './requests';
 const { init, Prover, SignedSession, TlsProof }: any = Comlink.wrap(
   new Worker(new URL('./worker.ts', import.meta.url)),
 );
@@ -23,26 +23,22 @@ function App(): ReactElement {
   const [result, setResult] = useState<ProofData | null>(null);
   const [proofHex, setProofHex] = useState<null | string>(null);
 
+  const { dns, headers, method, url, body } = requests['swapi'];
   const onClick = useCallback(async () => {
     setProcessing(true);
-    const notary = NotaryServer.from(`http://localhost:7047`);
+    const notary = NotaryServer.from(`http://18.207.122.203:7047`);
     console.time('submit');
     await init({ loggingLevel: 'Debug' });
     const prover = (await new Prover({
-      serverDns: 'swapi.dev',
+      serverDns: dns,
     })) as TProver;
 
     await prover.setup(await notary.sessionUrl());
     const resp = await prover.sendRequest('ws://localhost:55688', {
-      url: 'https://swapi.dev/api/people/1',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: {
-        hello: 'world',
-        one: 1,
-      },
+      url,
+      method: method as any,
+      headers,
+      body,
     });
 
     console.timeEnd('submit');
@@ -50,11 +46,8 @@ function App(): ReactElement {
 
     const session = await prover.notarize();
 
-    const signedSession = (await new SignedSession(
-      session,
-    )) as TSignedSession;
-    console.log("Signed Session hex:", await signedSession.serialize());
-
+    const signedSession = (await new SignedSession(session)) as TSignedSession;
+    console.log('Signed Session hex:', await signedSession.serialize());
   }, [setProofHex, setProcessing]);
 
   const onAltClick = useCallback(async () => {
