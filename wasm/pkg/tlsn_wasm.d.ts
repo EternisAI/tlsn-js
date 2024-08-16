@@ -209,7 +209,6 @@ export class wbg_rayon_PoolBuilder {
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
-  readonly init_logging: (a: number) => void;
   readonly __wbg_notarizedsession_free: (a: number) => void;
   readonly notarizedsession_proof: (a: number, b: number, c: number) => void;
   readonly notarizedsession_transcript: (a: number) => number;
@@ -230,6 +229,7 @@ export interface InitOutput {
   readonly verifier_new: (a: number) => number;
   readonly verifier_connect: (a: number, b: number, c: number) => number;
   readonly verifier_verify: (a: number) => number;
+  readonly init_logging: (a: number) => void;
   readonly __wbg_wbg_rayon_poolbuilder_free: (a: number) => void;
   readonly wbg_rayon_poolbuilder_numThreads: (a: number) => number;
   readonly wbg_rayon_poolbuilder_receiver: (a: number) => number;
