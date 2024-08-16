@@ -5,7 +5,6 @@ import initWasm, {
   LoggingConfig,
   SignedSession as WasmSignedSession,
   Transcript,
-  TlsProof as WasmTlsProof,
   type Commit,
   type Reveal,
   Verifier as WasmVerifier,
@@ -212,24 +211,6 @@ export class SignedSession {
 
   async serialize() {
     return arrayToHex(this.#session.serialize());
-  }
-}
-
-export class TlsProof {
-  #proof: WasmTlsProof;
-
-  constructor(serializedProofHex: string) {
-    this.#proof = WasmTlsProof.deserialize(
-      new Uint8Array(Buffer.from(serializedProofHex, 'hex')),
-    );
-  }
-
-  async free() {
-    return this.#proof.free();
-  }
-
-  async serialize() {
-    return arrayToHex(this.#proof.serialize());
   }
 }
 

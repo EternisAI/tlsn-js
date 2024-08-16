@@ -5,8 +5,6 @@ import { Watch } from 'react-loader-spinner';
 import {
   Prover as TProver,
   SignedSession as TSignedSession,
-  TlsProof as TTlsProof,
-  Commit,
   NotaryServer,
   ProofData,
 } from 'tlsn-js';
@@ -87,7 +85,6 @@ function App(): ReactElement {
   useEffect(() => {
     (async () => {
       if (proofHex) {
-        const proof = (await new TlsProof(proofHex)) as TTlsProof;
         const notary = NotaryServer.from(`http://localhost:7047`);
         const notaryKey = await notary.publicKey();
         setProcessing(false);
