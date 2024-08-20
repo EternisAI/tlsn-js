@@ -141,7 +141,7 @@ export class Prover {
   ): Promise<{
     status: number;
     headers: { [key: string]: string };
-    body?: string,
+    body?: string;
   }> {
     const { url, method = 'GET', headers = {}, body } = request;
     const hostname = new URL(url).hostname;
@@ -172,9 +172,27 @@ export class Prover {
     };
   }
 
-  async notarize(): Promise<string> {
+  async notarize(): Promise<{
+    signedSession: string;
+    signature: string;
+  }> {
     const signedSession = await this.#prover.notarize();
-    return arrayToHex(signedSession.serialize());
+
+    const signedSessionString = Buffer.from(signedSession.serialize()).toString(
+      'utf-8',
+    );
+
+    const serializedSessionArray = signedSession.serialize();
+    const signature = arrayToHex(
+      serializedSessionArray.slice(
+        serializedSessionArray.length - 64,
+        serializedSessionArray.length,
+      ),
+    );
+    return {
+      signedSession: signedSessionString,
+      signature: signature,
+    };
   }
 }
 
