@@ -20,7 +20,7 @@ root.render(<App />);
 
 function App(): ReactElement {
   const [processing, setProcessing] = useState(false);
-  const [result, setResult] = useState<ProofData | null>(null);
+  const [result, setResult] = useState<string | null>(null);
   const [proofHex, setProofHex] = useState<null | string>(null);
 
   const { dns, headers, method, url, body } = requests['swapi'];
@@ -46,8 +46,9 @@ function App(): ReactElement {
 
     const session = await prover.notarize();
 
-    const signedSession = (await new SignedSession(session)) as TSignedSession;
-    console.log('Signed Session hex:', await signedSession.serialize());
+    setProcessing(false);
+    setProofHex(session.signature);
+    setResult(session.signedSession);
   }, [setProofHex, setProcessing]);
 
   const onAltClick = useCallback(async () => {
@@ -89,6 +90,7 @@ function App(): ReactElement {
     <div>
       <div>
         <button
+          id="start-demo"
           onClick={!processing ? onClick : undefined}
           disabled={processing}
         >
@@ -124,7 +126,7 @@ function App(): ReactElement {
           </>
         ) : (
           <>
-            <details>
+            <details id="proof">
               <summary>View Proof</summary>
               <pre>{JSON.stringify(proofHex, null, 2)}</pre>
             </details>
@@ -132,14 +134,16 @@ function App(): ReactElement {
         )}
       </div>
       <div>
-        <b>Verification: </b>
-        {!proofHex ? (
-          <i>not started</i>
-        ) : !result ? (
-          <i>verifying</i>
-        ) : (
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-        )}
+        <details id="verification">
+          <summary>Verification: </summary>
+          {!proofHex ? (
+            <i>not started</i>
+          ) : !result ? (
+            <i>verifying</i>
+          ) : (
+            <pre>{JSON.stringify(result, null, 2)}</pre>
+          )}
+        </details>
       </div>
     </div>
   );
