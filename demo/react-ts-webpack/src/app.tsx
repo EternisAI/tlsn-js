@@ -26,7 +26,7 @@ function App(): ReactElement {
   const { dns, headers, method, url, body } = requests['swapi'];
   const onClick = useCallback(async () => {
     setProcessing(true);
-    const notary = NotaryServer.from(`http://18.207.122.203:7047`);
+    const notary = NotaryServer.from(`http://tlsn.eternis.ai:7047`);
     console.time('submit');
     await init({ loggingLevel: 'Debug' });
     const prover = (await new Prover({
@@ -46,9 +46,9 @@ function App(): ReactElement {
 
     const session = await prover.notarize();
 
-    setProcessing(false);
     setProofHex(session.signature);
     setResult(session.signedSession);
+    setProcessing(false);
   }, [setProofHex, setProcessing]);
 
   const onAltClick = useCallback(async () => {
@@ -126,22 +126,19 @@ function App(): ReactElement {
           </>
         ) : (
           <>
-            <details id="proof">
-              <summary>View Proof</summary>
-              <pre>{JSON.stringify(proofHex, null, 2)}</pre>
-            </details>
+            <div id="proof">{JSON.stringify(proofHex, null, 2)}</div>
           </>
         )}
       </div>
       <div>
-        <details id="verification">
+        <details>
           <summary>Verification: </summary>
           {!proofHex ? (
             <i>not started</i>
           ) : !result ? (
             <i>verifying</i>
           ) : (
-            <pre>{JSON.stringify(result, null, 2)}</pre>
+            <pre id="verification">{JSON.stringify(result, null, 2)}</pre>
           )}
         </details>
       </div>
