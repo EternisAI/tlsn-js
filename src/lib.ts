@@ -5,6 +5,7 @@ import initWasm, {
   LoggingConfig,
   SignedSession as WasmSignedSession,
   Transcript,
+  new_method,
   type Commit,
   type Reveal,
   Verifier as WasmVerifier,
@@ -50,6 +51,7 @@ export default async function init(config?: {
 
   await initThreadPool(hardwareConcurrency);
   debug('initialized thread pool');
+  console.log(await new_method());
 }
 
 export class Prover {
