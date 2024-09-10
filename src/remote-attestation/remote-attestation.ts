@@ -45,7 +45,6 @@ export function verifyCertificate(certPath: string, chainCerts: ChainCert[]) {
 }
 
 export function decodeCbor(base64string: string): RemoteAttestation | null {
-  console.log('base64string', base64string);
   const data = Buffer.from(base64string, 'base64');
   try {
     const decoded = cbor.decodeAllSync(data);
@@ -67,7 +66,6 @@ export function decodeCborPayload(base64string: string) {
   try {
     const decoded = cbor.decodeAllSync(data);
     const payload = decoded[0] as Payload;
-    console.log('payload', payload);
     return payload;
   } catch (e: any) {
     console.log('Error decoding CBOR payload', e.toString());

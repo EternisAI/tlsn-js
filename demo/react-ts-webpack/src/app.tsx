@@ -46,8 +46,6 @@ function App(): ReactElement {
       );
       setResultVerify(resultVerify);
       setRemoteAttestation(remoteAttestation);
-
-      console.log('WASM initialized');
     };
 
     initialize();
