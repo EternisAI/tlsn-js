@@ -57,7 +57,7 @@ export default async function init(
   await initThreadPool(hardwareConcurrency);
   debug('initialized thread pool');
 
-  await verify_attestation_document(example_remote_attestation);
+  return await verify_attestation_document(example_remote_attestation);
 }
 
 export class Prover {

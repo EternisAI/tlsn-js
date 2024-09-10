@@ -35,14 +35,19 @@ const example_remote_attestation = {
 function App(): ReactElement {
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<string | null>(null);
-  const [resultVerify, setResultVerify] = useState<string | null>(null);
+  const [resultVerify, setResultVerify] = useState<boolean | null>(null);
   const [proofHex, setProofHex] = useState<null | string>(null);
 
   const { dns, headers, method, url, body } = requests['swapi'];
 
   useEffect(() => {
     const initialize = async () => {
-      await init({ loggingLevel: 'Debug' }, example_remote_attestation);
+      const resultVerify = await init(
+        { loggingLevel: 'Debug' },
+        example_remote_attestation,
+      );
+      setResultVerify(resultVerify);
+
       console.log('WASM initialized');
     };
 
@@ -112,6 +117,16 @@ function App(): ReactElement {
 
   return (
     <div>
+      <div>
+        {resultVerify !== null && (
+          <p>
+            Remote attestation is{' '}
+            {resultVerify ? 'valid ✅  ' : ' not valid ❌'}
+          </p>
+        )}
+        {JSON.stringify(example_remote_attestation, null, 2)}
+        ----------------------------------------------------
+      </div>
       <div>
         <button
           id="start-demo"
