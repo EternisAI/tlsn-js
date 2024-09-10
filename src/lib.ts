@@ -17,6 +17,12 @@ import initWasm, {
 import { arrayToHex, expect, headerToMap } from './utils';
 import type { ParsedTranscriptData, ProofData } from './types';
 
+import {
+  decodeCbor,
+  RemoteAttestation,
+  decodeCborAll,
+} from './remote-attestation/remote-attestation';
+
 let LOGGING_LEVEL: LoggingLevel = 'Info';
 
 function debug(...args: any[]) {
@@ -24,8 +30,8 @@ function debug(...args: any[]) {
     console.log('tlsn-js DEBUG', ...args);
   }
 }
-
-export { verify_attestation_document };
+export type { RemoteAttestation };
+export { verify_attestation_document, decodeCbor, decodeCborAll };
 
 export default async function init(
   config?: {

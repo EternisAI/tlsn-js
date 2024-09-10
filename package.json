@@ -71,5 +71,9 @@
   "license": "ISC",
   "engines": {
     "node": ">= 16.20.2"
+  },
+  "dependencies": {
+    "cbor-web": "^9.0.2",
+    "crypto-js": "^4.2.0"
   }
 }
