@@ -25,10 +25,15 @@ function debug(...args: any[]) {
   }
 }
 
-export default async function init(config?: {
-  loggingLevel?: LoggingLevel;
-  hardwareConcurrency?: number;
-}) {
+export { verify_attestation_document };
+
+export default async function init(
+  config?: {
+    loggingLevel?: LoggingLevel;
+    hardwareConcurrency?: number;
+  },
+  example_remote_attestation: string[],
+) {
   const {
     loggingLevel = 'Info',
     hardwareConcurrency = navigator.hardwareConcurrency,
@@ -51,7 +56,8 @@ export default async function init(config?: {
 
   await initThreadPool(hardwareConcurrency);
   debug('initialized thread pool');
-  console.log(await verify_attestation_document());
+
+  await verify_attestation_document(example_remote_attestation);
 }
 
 export class Prover {
