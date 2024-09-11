@@ -151,9 +151,8 @@ function App(): ReactElement {
         {remote_attestation_encoded.slice(-10)}
         <p>decoded remote attestation</p>
         {remoteAttestation && JSON.stringify(remoteAttestation, null, 2)}
-        ----------------------------------------------------
       </div>
-      <div>
+      {/* <div>
         <button
           id="start-demo"
           onClick={!processing ? onClick : undefined}
@@ -206,7 +205,7 @@ function App(): ReactElement {
             <pre id="verification">{JSON.stringify(result, null, 2)}</pre>
           )}
         </details>
-      </div>
+      </div> */}
     </div>
   );
 }
