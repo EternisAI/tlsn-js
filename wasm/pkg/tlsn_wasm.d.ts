@@ -19,6 +19,13 @@ export function initThreadPool(num_threads: number): Promise<any>;
 * @param {number} receiver
 */
 export function wbg_rayon_start_worker(receiver: number): void;
+export interface ProverConfig {
+    id: string;
+    server_dns: string;
+    max_sent_data: number | undefined;
+    max_recv_data: number | undefined;
+}
+
 export interface AttestationDocument {
     protected: string | undefined;
     signature: string | undefined;
@@ -40,12 +47,6 @@ export interface LoggingConfig {
 export type SpanEvent = "New" | "Close" | "Active";
 
 export type LoggingLevel = "Trace" | "Debug" | "Info" | "Warn" | "Error";
-
-export interface VerifierConfig {
-    id: string;
-    max_sent_data: number | undefined;
-    max_received_data: number | undefined;
-}
 
 export type Body = JsonValue;
 
@@ -87,11 +88,10 @@ export interface VerifierData {
     received_auth_ranges: { start: number; end: number }[];
 }
 
-export interface ProverConfig {
+export interface VerifierConfig {
     id: string;
-    server_dns: string;
     max_sent_data: number | undefined;
-    max_recv_data: number | undefined;
+    max_received_data: number | undefined;
 }
 
 /**
@@ -180,17 +180,17 @@ export class wbg_rayon_PoolBuilder {
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
+  readonly __wbg_prover_free: (a: number, b: number) => void;
+  readonly prover_new: (a: number) => number;
+  readonly prover_setup: (a: number, b: number, c: number) => number;
+  readonly prover_send_request: (a: number, b: number, c: number, d: number) => number;
+  readonly prover_notarize: (a: number) => number;
   readonly __wbg_verifier_free: (a: number, b: number) => void;
   readonly verifier_new: (a: number) => number;
   readonly verifier_connect: (a: number, b: number, c: number) => number;
   readonly verifier_verify: (a: number) => number;
   readonly init_logging: (a: number) => void;
   readonly verify_attestation_document: (a: number) => number;
-  readonly __wbg_prover_free: (a: number, b: number) => void;
-  readonly prover_new: (a: number) => number;
-  readonly prover_setup: (a: number, b: number, c: number) => number;
-  readonly prover_send_request: (a: number, b: number, c: number, d: number) => number;
-  readonly prover_notarize: (a: number) => number;
   readonly __wbg_signedsession_free: (a: number, b: number) => void;
   readonly signedsession_serialize: (a: number, b: number) => void;
   readonly signedsession_deserialize: (a: number, b: number, c: number) => void;
