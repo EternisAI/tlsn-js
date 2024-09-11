@@ -1,6 +1,8 @@
 import { chainCerts, ChainCert } from './chain-certs';
 import * as cbor from 'cbor-web';
-import * as crypto from 'crypto-browserify';
+import * as crypto from 'crypto';
+
+import { Certificate, PrivateKey } from '@sardinefish/x509';
 
 export interface RemoteAttestation {
   protected: string;
@@ -20,22 +22,26 @@ export interface Payload {
   nonce: Uint8Array | null;
 }
 
-export function verifyx509Certificate(payload: Uint8Array) {
-  //enclave certificate
-  let cert = new crypto.X509Certificate(payload);
+//@todo chaincerts is harcoded rn but can be extracted from remote attestation cabundle actually.
+//Only the root CA should be saved or downloaded from aws.
+export function verifyx509Certificate(certificateBytes: Uint8Array) {
+  // Add PEM begin and end lines
 
-  //1st certificate is ec2 instance certificate
-  // final certificate is the root certificate
-  let result = true;
-  for (let i = 0; i < chainCerts.length; i++) {
-    const ca = new crypto.X509Certificate(chainCerts[i].Cert);
-    const result_ = cert.verify(ca.publicKey);
-
-    result = result && result_;
-    cert = ca;
+  const pemCertificate = Buffer.concat([
+    Buffer.from(`-----BEGIN CERTIFICATE-----
+${Buffer.from(certificateBytes).toString('base64')}
+-----END CERTIFICATE-----`),
+  ]);
+  // Parse the certificate
+  let cert = Certificate.fromPEM(pemCertificate);
+  for (let i = 0; i < chainCerts.length - 1; i++) {
+    const issuer = Certificate.fromPEM(Buffer.from(chainCerts[i].Cert));
+    if (issuer.checkSignature(cert) !== null) {
+      return false;
+    }
+    cert = issuer;
   }
-
-  return result;
+  return true;
 }
 
 export function decodeCbor(base64string: string): RemoteAttestation | null {

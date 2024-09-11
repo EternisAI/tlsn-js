@@ -37,20 +37,39 @@ function App(): ReactElement {
     useState<null | RemoteAttestation>(null);
   const { dns, headers, method, url, body } = requests['swapi'];
 
+  const [error, setError] = useState<null | string>(null);
+
   useEffect(() => {
     const initialize = async () => {
-      const remoteAttestation: any = decodeCborAll(remote_attestation_encoded);
-      console.log(remoteAttestation);
+      const remoteAttestation = decodeCborAll(remote_attestation_encoded);
+      console.log(remoteAttestation?.certificate);
+      if (!remoteAttestation) return;
 
-      const resultx509 = verifyx509Certificate(remoteAttestation.payload);
-      console.log(resultx509);
+      setRemoteAttestation(remoteAttestation);
 
       const resultVerify = await init(
         { loggingLevel: 'Debug' },
         remoteAttestation,
       );
-      setResultVerify(resultVerify);
-      setRemoteAttestation(remoteAttestation);
+
+      if (!resultVerify) {
+        return setError('remote attestation signature is not valid');
+      }
+      //verify x509 certificate
+      if (remoteAttestation?.certificate) {
+        const certificateUint8Array = Buffer.from(
+          remoteAttestation?.certificate,
+          'base64',
+        );
+        const resultx509 = verifyx509Certificate(certificateUint8Array);
+        if (!resultx509) {
+          setError('x509 certificate is not valid');
+        }
+        setResultVerify(resultx509);
+      } else {
+        setError('x509 certificate is not found');
+        setResultVerify(false);
+      }
     };
 
     initialize();
@@ -126,6 +145,7 @@ function App(): ReactElement {
             {resultVerify ? 'valid ✅  ' : ' not valid ❌'}
           </p>
         )}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <p>encoded remote attestation</p>
         {remote_attestation_encoded.slice(0, 10)}..
         {remote_attestation_encoded.slice(-10)}

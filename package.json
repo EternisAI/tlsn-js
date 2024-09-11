@@ -73,6 +73,7 @@
     "node": ">= 16.20.2"
   },
   "dependencies": {
+    "@sardinefish/x509": "^1.2.1",
     "@types/crypto-js": "^4.2.2",
     "@types/node": "^22.5.4",
     "cbor-web": "^9.0.2",
