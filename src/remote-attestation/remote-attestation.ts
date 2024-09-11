@@ -1,5 +1,6 @@
 import { chainCerts, ChainCert } from './chain-certs';
 import * as cbor from 'cbor-web';
+import * as crypto from 'crypto-browserify';
 
 export interface RemoteAttestation {
   protected: string;
@@ -19,11 +20,9 @@ export interface Payload {
   nonce: Uint8Array | null;
 }
 
-export function verifyCertificate(certPath: string, chainCerts: ChainCert[]) {
-  // Read the certificate and CA certificate
-
+export function verifyx509Certificate(payload: Uint8Array) {
   //enclave certificate
-  let cert = new crypto.X509Certificate(fs.readFileSync(certPath));
+  let cert = new crypto.X509Certificate(payload);
 
   //1st certificate is ec2 instance certificate
   // final certificate is the root certificate
@@ -36,11 +35,6 @@ export function verifyCertificate(certPath: string, chainCerts: ChainCert[]) {
     cert = ca;
   }
 
-  // console.log('Subject:', cert.subject);
-  // console.log('Issuer:', cert.issuer);
-  // console.log('Valid from:', cert.validFrom);
-  // console.log('Valid to:', cert.validTo);
-  // console.log('publicKey:', cert.publicKey);
   return result;
 }
 

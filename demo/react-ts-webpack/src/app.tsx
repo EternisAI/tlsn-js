@@ -9,6 +9,7 @@ import {
   ProofData,
   decodeCborAll,
   RemoteAttestation,
+  verifyx509Certificate,
 } from 'tlsn-js';
 import { requests } from './requests';
 const {
@@ -39,6 +40,10 @@ function App(): ReactElement {
   useEffect(() => {
     const initialize = async () => {
       const remoteAttestation: any = decodeCborAll(remote_attestation_encoded);
+      console.log(remoteAttestation);
+
+      const resultx509 = verifyx509Certificate(remoteAttestation.payload);
+      console.log(resultx509);
 
       const resultVerify = await init(
         { loggingLevel: 'Debug' },

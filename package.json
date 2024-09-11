@@ -73,7 +73,10 @@
     "node": ">= 16.20.2"
   },
   "dependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^22.5.4",
     "cbor-web": "^9.0.2",
-    "crypto-js": "^4.2.0"
+    "crypto-js": "^4.2.0",
+    "vm-browserify": "^1.1.2"
   }
 }
