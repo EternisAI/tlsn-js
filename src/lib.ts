@@ -32,16 +32,9 @@ function debug(...args: any[]) {
   }
 }
 export type { RemoteAttestation };
-export {
-  verify_attestation_document,
-  decodeCbor,
-  decodeCborAll,
-  verifyx509Certificate,
-};
+export { decodeCbor, decodeCborAll, verifyx509Certificate };
 
-export async function verify_attestation_document_2(
-  remote_attestation: string[],
-) {
+export async function verify_attestation(remote_attestation: string[]) {
   console.log(remote_attestation);
   return await verify_attestation_document(remote_attestation);
 }

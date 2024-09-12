@@ -12,14 +12,8 @@ import {
   verifyx509Certificate,
 } from 'tlsn-js';
 import { requests } from './requests';
-const {
-  init,
-  Prover,
-  SignedSession,
-  TlsProof,
-  verifyAttestationDocument,
-  verify_attestation_document_2,
-}: any = Comlink.wrap(new Worker(new URL('./worker.ts', import.meta.url)));
+const { init, Prover, SignedSession, TlsProof, verify_attestation }: any =
+  Comlink.wrap(new Worker(new URL('./worker.ts', import.meta.url)));
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
@@ -47,7 +41,7 @@ function App(): ReactElement {
     setRemoteAttestation(remoteAttestation);
 
     console.log(remoteAttestation);
-    const resultVerify = await verify_attestation_document_2(remoteAttestation);
+    const resultVerify = await verify_attestation(remoteAttestation);
     console.log(resultVerify);
 
     if (!resultVerify) {
