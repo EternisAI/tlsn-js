@@ -22,6 +22,7 @@ import {
   RemoteAttestation,
   decodeCborAll,
   verifyx509Certificate,
+  generateNonce,
 } from './remote-attestation/remote-attestation';
 
 let LOGGING_LEVEL: LoggingLevel = 'Info';
@@ -32,7 +33,7 @@ function debug(...args: any[]) {
   }
 }
 export type { RemoteAttestation };
-export { decodeCbor, decodeCborAll, verifyx509Certificate };
+export { decodeCbor, decodeCborAll, verifyx509Certificate, generateNonce };
 
 export async function verify_attestation(remote_attestation: string[]) {
   console.log(remote_attestation);

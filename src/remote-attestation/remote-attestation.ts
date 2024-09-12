@@ -45,12 +45,12 @@ export interface Payload {
 //   return true;
 // }
 
-export function decodeCbor(base64string: string): RemoteAttestation | null {
+export function decodeCbor(base64string: string) {
   const data = Buffer.from(base64string, 'base64');
   try {
     const decoded = cbor.decodeAllSync(data);
 
-    const remoteAttestation: RemoteAttestation = {
+    const remoteAttestation = {
       protected: Buffer.from(decoded[0][0]).toString('base64'),
       payload: Buffer.from(decoded[0][2]).toString('base64'),
       signature: Buffer.from(decoded[0][3]).toString('base64'),
@@ -60,6 +60,12 @@ export function decodeCbor(base64string: string): RemoteAttestation | null {
     console.log('Error decoding CBOR attestation', e.toString());
     return null;
   }
+}
+
+export function generateNonce() {
+  return Array.from({ length: 40 }, () =>
+    Math.floor(Math.random() * 16).toString(16),
+  ).join('');
 }
 
 export function decodeCborPayload(base64string: string) {
@@ -74,6 +80,7 @@ export function decodeCborPayload(base64string: string) {
       stringMap.set(key, Buffer.from(value).toString('base64'));
     });
     payload.pcrs = stringMap;
+    payload.nonce = Buffer.from(payload.nonce).toString('hex');
 
     return payload as Payload;
   } catch (e: any) {
@@ -82,7 +89,9 @@ export function decodeCborPayload(base64string: string) {
   }
 }
 
-export function decodeCborAll(base64string: string) {
+export function decodeCborAll(
+  base64string: string,
+): RemoteAttestation | undefined {
   const remoteAttestation = decodeCbor(base64string);
   if (!remoteAttestation) return;
   const payload = decodeCborPayload(remoteAttestation.payload);
