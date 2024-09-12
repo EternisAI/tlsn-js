@@ -15,7 +15,7 @@ export interface Payload {
   module_id: string;
   timestamp: number;
   digest: string;
-  pcrs: Map<string, string>;
+  pcrs: Map<number, string>;
   certificate: Uint8Array;
   cabundle: Uint8Array[];
   public_key: Buffer;
