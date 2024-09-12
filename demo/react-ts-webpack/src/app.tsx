@@ -41,6 +41,7 @@ function App(): ReactElement {
   const [error, setError] = useState<null | string>(null);
 
   const verify_attestation_document = async () => {
+    setProcessing(true);
     const remoteAttestation = decodeCborAll(remote_attestation_encoded);
     if (!remoteAttestation) return;
     setRemoteAttestation(remoteAttestation);
@@ -67,6 +68,7 @@ function App(): ReactElement {
       setError('x509 certificate is not found');
       setResultVerify(false);
     }
+    setProcessing(false);
   };
   useEffect(() => {
     const initialize = async () => {
@@ -147,6 +149,19 @@ function App(): ReactElement {
         </button>
       </div>
       <div>
+        <p>
+          encoded remote attestation
+          <br /> {remote_attestation_encoded.slice(0, 10)}..
+          {remote_attestation_encoded.slice(-10)}
+        </p>
+
+        {remoteAttestation && (
+          <p>
+            decoded remote attestation{' '}
+            {JSON.stringify(remoteAttestation, null, 2)}{' '}
+          </p>
+        )}
+
         {resultVerify !== null && (
           <p>
             Remote attestation is{' '}
@@ -154,11 +169,8 @@ function App(): ReactElement {
           </p>
         )}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <p>encoded remote attestation</p>
-        {remote_attestation_encoded.slice(0, 10)}..
-        {remote_attestation_encoded.slice(-10)}
-        <p>decoded remote attestation</p>
-        {remoteAttestation && JSON.stringify(remoteAttestation, null, 2)}
+
+        {processing && <p>Processing...</p>}
       </div>
       {/* <div>
         <button
