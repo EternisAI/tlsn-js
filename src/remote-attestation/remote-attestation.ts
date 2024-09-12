@@ -1,6 +1,5 @@
 import { chainCerts, ChainCert } from './chain-certs';
 import * as cbor from 'cbor-web';
-import * as crypto from 'crypto';
 
 import { Certificate, PrivateKey } from '@sardinefish/x509';
 
