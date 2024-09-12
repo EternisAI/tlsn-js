@@ -15,7 +15,7 @@ export interface Payload {
   module_id: string;
   timestamp: number;
   digest: string;
-  pcrs: string[];
+  pcrs: Map<string, string>;
   certificate: Uint8Array;
   cabundle: Uint8Array[];
   public_key: Buffer;
@@ -66,7 +66,14 @@ export function decodeCborPayload(base64string: string) {
   const data = Buffer.from(base64string, 'base64');
   try {
     const decoded = cbor.decodeAllSync(data);
-    let payload = decoded[0];
+    const payload = decoded[0];
+
+    const pcrs: Map<string, Uint8Array> = payload.pcrs;
+    const stringMap: Map<string, string> = new Map();
+    pcrs.forEach((value, key) => {
+      stringMap.set(key, Buffer.from(value).toString('base64'));
+    });
+    payload.pcrs = stringMap;
 
     return payload as Payload;
   } catch (e: any) {
