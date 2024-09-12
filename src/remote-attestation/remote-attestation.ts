@@ -62,12 +62,6 @@ export function decodeCbor(base64string: string) {
   }
 }
 
-export function generateNonce() {
-  return Array.from({ length: 40 }, () =>
-    Math.floor(Math.random() * 16).toString(16),
-  ).join('');
-}
-
 export function decodeCborPayload(base64string: string) {
   const data = Buffer.from(base64string, 'base64');
   try {
@@ -89,6 +83,11 @@ export function decodeCborPayload(base64string: string) {
   }
 }
 
+/**
+ * Decode CBOR document and parse remote attestation fields
+ * @returns {RemoteAttestation} The generated nonce.
+ */
+
 export function decodeCborAll(
   base64string: string,
 ): RemoteAttestation | undefined {
@@ -105,50 +104,18 @@ export function decodeCborAll(
   };
 }
 
+/**
+ * It generates a random nonce of length 40 using hexadecimal characters.
+ * This nonce is used to ensure the uniqueness of the attestation.
+ * @returns {string} The generated nonce.
+ */
+
+export function generateNonce() {
+  return Array.from({ length: 40 }, () =>
+    Math.floor(Math.random() * 16).toString(16),
+  ).join('');
+}
+
 export function uint8ArrayToBase64(uint8Array: Uint8Array) {
   return Buffer.from(uint8Array).toString('base64');
 }
-
-// async function verifyRemoteAttestation() {
-//   //fetch attestation
-//   // add axios code here..
-
-//   //parse cbor structure
-//   const base64String = fs.readFileSync('./remote_attestation', 'utf8');
-//   const remote_attestation_uint8 = Buffer.from(base64String, 'base64');
-//   const remote_attestation = decodeCbor(remote_attestation_uint8);
-
-//   if (!remote_attestation) return;
-
-//   const payload = decodeCborPayload(remote_attestation.payload);
-//   // console.log(payload);
-
-//   if (!payload) return;
-
-//   //verify signature of attestation
-//   const cert = new crypto.X509Certificate(payload.certificate);
-//   //console.log('payload.certificate', new Uint8Array(payload.certificate));
-
-//   //@todo verify signature by calling wasm
-//   console.log('payload', remote_attestation.payload);
-//   console.log('signature', remote_attestation.signature);
-//   console.log('protected', remote_attestation.protected);
-//   console.log('payload.certificate', new Uint8Array(payload.certificate));
-
-//   fs.writeFileSync(
-//     './out/certificate',
-//     uint8ArrayToBase64(payload.certificate),
-//   );
-//   fs.writeFileSync(
-//     './out/signature',
-//     uint8ArrayToBase64(remote_attestation.signature),
-//   );
-//   fs.writeFileSync(
-//     './out/protected',
-//     uint8ArrayToBase64(remote_attestation.protected),
-//   );
-
-//   //@todo verify PCR values
-
-//   //@todo verify nonce
-// }
