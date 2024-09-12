@@ -7,6 +7,7 @@ export interface RemoteAttestation {
   protected: string;
   payload: string;
   signature: string;
+  certificate: string;
 }
 
 export interface Payload {

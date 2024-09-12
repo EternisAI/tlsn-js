@@ -18,6 +18,7 @@ const {
   SignedSession,
   TlsProof,
   verifyAttestationDocument,
+  verify_attestation_document_2,
 }: any = Comlink.wrap(new Worker(new URL('./worker.ts', import.meta.url)));
 
 const container = document.getElementById('root');
@@ -39,92 +40,94 @@ function App(): ReactElement {
 
   const [error, setError] = useState<null | string>(null);
 
+  const verify_attestation_document = async () => {
+    const remoteAttestation = decodeCborAll(remote_attestation_encoded);
+    if (!remoteAttestation) return;
+    setRemoteAttestation(remoteAttestation);
+
+    console.log(remoteAttestation);
+    const resultVerify = await verify_attestation_document_2(remoteAttestation);
+    console.log(resultVerify);
+
+    if (!resultVerify) {
+      return setError('remote attestation signature is not valid');
+    }
+    //verify x509 certificate
+    if (remoteAttestation?.certificate) {
+      const certificateUint8Array = Buffer.from(
+        remoteAttestation?.certificate,
+        'base64',
+      );
+      const resultx509 = verifyx509Certificate(certificateUint8Array);
+      if (!resultx509) {
+        setError('x509 certificate is not valid');
+      }
+      setResultVerify(resultx509);
+    } else {
+      setError('x509 certificate is not found');
+      setResultVerify(false);
+    }
+  };
   useEffect(() => {
     const initialize = async () => {
-      const remoteAttestation = decodeCborAll(remote_attestation_encoded);
-      console.log(remoteAttestation?.certificate);
-      if (!remoteAttestation) return;
-
       setRemoteAttestation(remoteAttestation);
 
-      const resultVerify = await init(
-        { loggingLevel: 'Debug' },
-        remoteAttestation,
-      );
-
-      if (!resultVerify) {
-        return setError('remote attestation signature is not valid');
-      }
-      //verify x509 certificate
-      if (remoteAttestation?.certificate) {
-        const certificateUint8Array = Buffer.from(
-          remoteAttestation?.certificate,
-          'base64',
-        );
-        const resultx509 = verifyx509Certificate(certificateUint8Array);
-        if (!resultx509) {
-          setError('x509 certificate is not valid');
-        }
-        setResultVerify(resultx509);
-      } else {
-        setError('x509 certificate is not found');
-        setResultVerify(false);
-      }
+      await init({ loggingLevel: 'Debug' });
     };
 
     initialize();
   }, []);
-  const onClick = useCallback(async () => {
-    setProcessing(true);
-    const notary = NotaryServer.from(`http://tlsn.eternis.ai:7047`);
-    console.time('submit');
-    await init({ loggingLevel: 'Debug' }, null);
-    const prover = (await new Prover({
-      serverDns: dns,
-    })) as TProver;
+  // const onClick = useCallback(async () => {
+  //   setProcessing(true);
+  //   const notary = NotaryServer.from(`http://tlsn.eternis.ai:7047`);
+  //   console.time('submit');
+  //   await init({ loggingLevel: 'Debug' }, null);
+  //   const prover = (await new Prover({
+  //     serverDns: dns,
+  //   })) as TProver;
 
-    await prover.setup(await notary.sessionUrl());
-    const resp = await prover.sendRequest('ws://localhost:55688', {
-      url,
-      method: method as any,
-      headers,
-      body,
-    });
+  //   await prover.setup(await notary.sessionUrl());
+  //   const resp = await prover.sendRequest('ws://localhost:55688', {
+  //     url,
+  //     method: method as any,
+  //     headers,
+  //     body,
+  //   });
 
-    console.timeEnd('submit');
-    console.log(resp);
+  //   console.timeEnd('submit');
+  //   console.log(resp);
 
-    const session = await prover.notarize();
+  //   const session = await prover.notarize();
 
-    setProofHex(session.signature);
-    setResult(session.signedSession);
-    setProcessing(false);
-  }, [setProofHex, setProcessing]);
+  //   setProofHex(session.signature);
+  //   setResult(session.signedSession);
+  //   setProcessing(false);
+  // }, [setProofHex, setProcessing]);
 
-  const onAltClick = useCallback(async () => {
-    setProcessing(true);
-    await init({ loggingLevel: 'Debug' });
-    const proof = await Prover.notarize({
-      id: 'test',
-      notaryUrl: 'http://localhost:7047',
-      websocketProxyUrl: 'ws://localhost:55688',
-      url: 'https://swapi.dev/api/people/1',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: {
-        hello: 'world',
-        one: 1,
-      },
-      commit: {
-        sent: [{ start: 0, end: 50 }],
-        recv: [{ start: 0, end: 50 }],
-      },
-    });
+  // const onAltClick = useCallback(async () => {
+  //   setProcessing(true);
+  //   await init({ loggingLevel: 'Debug' });
+  //   const proof = await Prover.notarize({
+  //     id: 'test',
+  //     notaryUrl: 'http://localhost:7047',
+  //     websocketProxyUrl: 'ws://localhost:55688',
+  //     url: 'https://swapi.dev/api/people/1',
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: {
+  //       hello: 'world',
+  //       one: 1,
+  //     },
+  //     commit: {
+  //       sent: [{ start: 0, end: 50 }],
+  //       recv: [{ start: 0, end: 50 }],
+  //     },
+  //   });
 
-    setProofHex(proof);
-  }, [setProofHex, setProcessing]);
+  //   setProofHex(proof);
+  // }, [setProofHex, setProcessing]);
 
   useEffect(() => {
     (async () => {
@@ -138,6 +141,11 @@ function App(): ReactElement {
 
   return (
     <div>
+      <div>
+        <button onClick={verify_attestation_document}>
+          Verify attestation document
+        </button>
+      </div>
       <div>
         {resultVerify !== null && (
           <p>

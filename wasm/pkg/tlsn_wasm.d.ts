@@ -33,20 +33,11 @@ export interface AttestationDocument {
     certificate: string | undefined;
 }
 
-export interface CrateLogFilter {
-    level: LoggingLevel;
-    name: string;
+export interface VerifierConfig {
+    id: string;
+    max_sent_data: number | undefined;
+    max_received_data: number | undefined;
 }
-
-export interface LoggingConfig {
-    level: LoggingLevel | undefined;
-    crate_filters: CrateLogFilter[] | undefined;
-    span_events: SpanEvent[] | undefined;
-}
-
-export type SpanEvent = "New" | "Close" | "Active";
-
-export type LoggingLevel = "Trace" | "Debug" | "Info" | "Warn" | "Error";
 
 export type Body = JsonValue;
 
@@ -88,11 +79,20 @@ export interface VerifierData {
     received_auth_ranges: { start: number; end: number }[];
 }
 
-export interface VerifierConfig {
-    id: string;
-    max_sent_data: number | undefined;
-    max_received_data: number | undefined;
+export interface CrateLogFilter {
+    level: LoggingLevel;
+    name: string;
 }
+
+export interface LoggingConfig {
+    level: LoggingLevel | undefined;
+    crate_filters: CrateLogFilter[] | undefined;
+    span_events: SpanEvent[] | undefined;
+}
+
+export type SpanEvent = "New" | "Close" | "Active";
+
+export type LoggingLevel = "Trace" | "Debug" | "Info" | "Warn" | "Error";
 
 /**
 */
@@ -185,15 +185,15 @@ export interface InitOutput {
   readonly prover_setup: (a: number, b: number, c: number) => number;
   readonly prover_send_request: (a: number, b: number, c: number, d: number) => number;
   readonly prover_notarize: (a: number) => number;
-  readonly __wbg_verifier_free: (a: number, b: number) => void;
-  readonly verifier_new: (a: number) => number;
-  readonly verifier_connect: (a: number, b: number, c: number) => number;
-  readonly verifier_verify: (a: number) => number;
   readonly init_logging: (a: number) => void;
   readonly verify_attestation_document: (a: number) => number;
   readonly __wbg_signedsession_free: (a: number, b: number) => void;
   readonly signedsession_serialize: (a: number, b: number) => void;
   readonly signedsession_deserialize: (a: number, b: number, c: number) => void;
+  readonly __wbg_verifier_free: (a: number, b: number) => void;
+  readonly verifier_new: (a: number) => number;
+  readonly verifier_connect: (a: number, b: number, c: number) => number;
+  readonly verifier_verify: (a: number) => number;
   readonly __wbg_wbg_rayon_poolbuilder_free: (a: number, b: number) => void;
   readonly wbg_rayon_poolbuilder_numThreads: (a: number) => number;
   readonly wbg_rayon_poolbuilder_receiver: (a: number) => number;

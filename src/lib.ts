@@ -39,13 +39,17 @@ export {
   verifyx509Certificate,
 };
 
-export default async function init(
-  config?: {
-    loggingLevel?: LoggingLevel;
-    hardwareConcurrency?: number;
-  },
-  example_remote_attestation: string[],
+export async function verify_attestation_document_2(
+  remote_attestation: string[],
 ) {
+  console.log(remote_attestation);
+  return await verify_attestation_document(remote_attestation);
+}
+
+export default async function init(config?: {
+  loggingLevel?: LoggingLevel;
+  hardwareConcurrency?: number;
+}) {
   const {
     loggingLevel = 'Info',
     hardwareConcurrency = navigator.hardwareConcurrency,
@@ -69,7 +73,7 @@ export default async function init(
   await initThreadPool(hardwareConcurrency);
   debug('initialized thread pool');
 
-  return await verify_attestation_document(example_remote_attestation);
+  return true;
 }
 
 export class Prover {
