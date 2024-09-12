@@ -27,9 +27,9 @@ const rules = [
 ];
 
 var alias = {
-  crypto: require.resolve('crypto-browserify'),
   stream: require.resolve('stream-browserify'),
-  vm: require.resolve('vm-browserify'),
+  // crypto: require.resolve('crypto-browserify'),
+  // vm: require.resolve('vm-browserify'),
 };
 
 var fileExtensions = [
@@ -79,9 +79,7 @@ module.exports = [
         .map((extension) => '.' + extension)
         .concat(['.js', '.jsx', '.ts', '.tsx', '.css']),
       fallback: {
-        crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify'),
-        vm: require.resolve('vm-browserify'),
       },
     }
   },

@@ -8,13 +8,14 @@ export interface RemoteAttestation {
   payload: string;
   signature: string;
   certificate: string;
+  payload_object: Payload;
 }
 
 export interface Payload {
   module_id: string;
   timestamp: number;
   digest: string;
-  pcrs: Uint8Array[];
+  pcrs: string[];
   certificate: Uint8Array;
   cabundle: Uint8Array[];
   public_key: Buffer;
@@ -22,27 +23,27 @@ export interface Payload {
   nonce: Uint8Array | null;
 }
 
-//@todo chaincerts is harcoded rn but can be extracted from remote attestation cabundle actually.
-//Only the root CA should be saved or downloaded from aws.
-export function verifyx509Certificate(certificateBytes: Uint8Array) {
-  // Add PEM begin and end lines
+// //@todo chaincerts is harcoded rn but can be extracted from remote attestation cabundle actually.
+// //Only the root CA should be saved or downloaded from aws.
+// export function verifyx509Certificate(certificateBytes: Uint8Array) {
+//   // Add PEM begin and end lines
 
-  const pemCertificate = Buffer.concat([
-    Buffer.from(`-----BEGIN CERTIFICATE-----
-${Buffer.from(certificateBytes).toString('base64')}
------END CERTIFICATE-----`),
-  ]);
-  // Parse the certificate
-  let cert = Certificate.fromPEM(pemCertificate);
-  for (let i = 0; i < chainCerts.length - 1; i++) {
-    const issuer = Certificate.fromPEM(Buffer.from(chainCerts[i].Cert));
-    if (issuer.checkSignature(cert) !== null) {
-      return false;
-    }
-    cert = issuer;
-  }
-  return true;
-}
+//   const pemCertificate = Buffer.concat([
+//     Buffer.from(`-----BEGIN CERTIFICATE-----
+// ${Buffer.from(certificateBytes).toString('base64')}
+// -----END CERTIFICATE-----`),
+//   ]);
+//   // Parse the certificate
+//   let cert = Certificate.fromPEM(pemCertificate);
+//   for (let i = 0; i < chainCerts.length - 1; i++) {
+//     const issuer = Certificate.fromPEM(Buffer.from(chainCerts[i].Cert));
+//     if (issuer.checkSignature(cert) !== null) {
+//       return false;
+//     }
+//     cert = issuer;
+//   }
+//   return true;
+// }
 
 export function decodeCbor(base64string: string): RemoteAttestation | null {
   const data = Buffer.from(base64string, 'base64');
@@ -65,8 +66,9 @@ export function decodeCborPayload(base64string: string) {
   const data = Buffer.from(base64string, 'base64');
   try {
     const decoded = cbor.decodeAllSync(data);
-    const payload = decoded[0] as Payload;
-    return payload;
+    let payload = decoded[0];
+
+    return payload as Payload;
   } catch (e: any) {
     console.log('Error decoding CBOR payload', e.toString());
     return undefined;
@@ -83,6 +85,7 @@ export function decodeCborAll(base64string: string) {
     payload: remoteAttestation.payload,
     signature: remoteAttestation.signature,
     certificate: Buffer.from(payload.certificate).toString('base64'),
+    payload_object: payload,
   };
 }
 
