@@ -20,7 +20,7 @@ export interface Payload {
   cabundle: Uint8Array[];
   public_key: Buffer;
   user_data: Uint8Array | null;
-  nonce: Uint8Array | null;
+  nonce: string | null;
 }
 
 // //@todo chaincerts is harcoded rn but can be extracted from remote attestation cabundle actually.
