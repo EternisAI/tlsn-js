@@ -37,18 +37,8 @@ function App(): ReactElement {
 
   const verify_attestation_document = async () => {
     setProcessing(true);
-    const remoteAttestation = decodeCborAll(remote_attestation_encoded);
-    if (!remoteAttestation) return;
-    setRemoteAttestation(remoteAttestation);
-
-    console.log(remoteAttestation);
-    const resultVerify = await verify_attestation(remoteAttestation);
-    console.log(resultVerify);
-
-    if (!resultVerify) {
-      setError('remote attestation signature is not valid');
-    }
-
+    const resultVerify = await verify_attestation(remote_attestation_encoded);
+    if (!resultVerify) setError('remote attestation signature is not valid');
     setResultVerify(resultVerify);
     setProcessing(false);
   };
@@ -137,7 +127,7 @@ function App(): ReactElement {
           <h1 className="block mt-1 text-lg leading-tight font-medium text-black">
             Document Content
           </h1>
-          <div className="mt-2 h-40 overflow-y-auto border border-gray-200 rounded p-4 mb-4">
+          <div className="mt-2 h-80 overflow-y-auto border border-gray-200 rounded p-4 mb-4">
             <div>
               <h2 className="text-l font-bold">encoded remote attestation</h2>
               {remote_attestation_encoded.slice(0, 10)}..

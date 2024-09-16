@@ -6,10 +6,10 @@
 */
 export function init_logging(config?: LoggingConfig): void;
 /**
-* @param {AttestationDocument} attestation_document
+* @param {string} attestation_document
 * @returns {boolean}
 */
-export function verify_attestation_document(attestation_document: AttestationDocument): boolean;
+export function verify_attestation_document(attestation_document: string): boolean;
 /**
 * @param {number} num_threads
 * @returns {Promise<any>}
@@ -193,7 +193,7 @@ export interface InitOutput {
   readonly verifier_connect: (a: number, b: number, c: number) => number;
   readonly verifier_verify: (a: number) => number;
   readonly init_logging: (a: number) => void;
-  readonly verify_attestation_document: (a: number) => number;
+  readonly verify_attestation_document: (a: number, b: number) => number;
   readonly __wbg_wbg_rayon_poolbuilder_free: (a: number, b: number) => void;
   readonly wbg_rayon_poolbuilder_numThreads: (a: number) => number;
   readonly wbg_rayon_poolbuilder_receiver: (a: number) => number;

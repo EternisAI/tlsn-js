@@ -21,7 +21,6 @@ import {
   decodeCbor,
   RemoteAttestation,
   decodeCborAll,
-  verifyx509Certificate,
   generateNonce,
 } from './remote-attestation/remote-attestation';
 
@@ -33,11 +32,10 @@ function debug(...args: any[]) {
   }
 }
 export type { RemoteAttestation };
-export { decodeCbor, decodeCborAll, verifyx509Certificate, generateNonce };
+export { decodeCbor, decodeCborAll, generateNonce };
 
-export async function verify_attestation(remote_attestation: string[]) {
-  console.log(remote_attestation);
-  return await verify_attestation_document(remote_attestation);
+export async function verify_attestation(remote_attestation_base64: string) {
+  return await verify_attestation_document(remote_attestation_base64);
 }
 
 export default async function init(config?: {
