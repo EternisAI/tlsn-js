@@ -9,7 +9,6 @@ import {
   ProofData,
   decodeCborAll,
   RemoteAttestation,
-  verifyx509Certificate,
 } from 'tlsn-js';
 import { requests } from './requests';
 const { init, Prover, SignedSession, TlsProof, verify_attestation }: any =
@@ -45,23 +44,10 @@ function App(): ReactElement {
     console.log(resultVerify);
 
     if (!resultVerify) {
-      return setError('remote attestation signature is not valid');
+      setError('remote attestation signature is not valid');
     }
     //verify x509 certificate
-    if (remoteAttestation?.certificate) {
-      const certificateUint8Array = Buffer.from(
-        remoteAttestation?.certificate,
-        'base64',
-      );
-      const resultx509 = verifyx509Certificate(certificateUint8Array);
-      if (!resultx509) {
-        setError('x509 certificate is not valid');
-      }
-      setResultVerify(resultx509);
-    } else {
-      setError('x509 certificate is not found');
-      setResultVerify(false);
-    }
+    setResultVerify(resultVerify);
     setProcessing(false);
   };
   useEffect(() => {

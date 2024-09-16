@@ -6,6 +6,11 @@
 */
 export function init_logging(config?: LoggingConfig): void;
 /**
+* @param {AttestationDocument} attestation_document
+* @returns {boolean}
+*/
+export function verify_attestation_document(attestation_document: AttestationDocument): boolean;
+/**
 * @param {number} num_threads
 * @returns {Promise<any>}
 */
@@ -14,19 +19,6 @@ export function initThreadPool(num_threads: number): Promise<any>;
 * @param {number} receiver
 */
 export function wbg_rayon_start_worker(receiver: number): void;
-export interface ProverConfig {
-    id: string;
-    server_dns: string;
-    max_sent_data: number | undefined;
-    max_recv_data: number | undefined;
-}
-
-export interface VerifierConfig {
-    id: string;
-    max_sent_data: number | undefined;
-    max_received_data: number | undefined;
-}
-
 export type Body = JsonValue;
 
 export type Method = "GET" | "POST" | "PUT" | "DELETE";
@@ -65,6 +57,26 @@ export interface VerifierData {
     sent_auth_ranges: { start: number; end: number }[];
     received: number[];
     received_auth_ranges: { start: number; end: number }[];
+}
+
+export interface AttestationDocument {
+    protected: string | undefined;
+    signature: string | undefined;
+    payload: string | undefined;
+    certificate: string | undefined;
+}
+
+export interface VerifierConfig {
+    id: string;
+    max_sent_data: number | undefined;
+    max_received_data: number | undefined;
+}
+
+export interface ProverConfig {
+    id: string;
+    server_dns: string;
+    max_sent_data: number | undefined;
+    max_recv_data: number | undefined;
 }
 
 export interface CrateLogFilter {
@@ -168,6 +180,9 @@ export class wbg_rayon_PoolBuilder {
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
+  readonly __wbg_signedsession_free: (a: number, b: number) => void;
+  readonly signedsession_serialize: (a: number, b: number) => void;
+  readonly signedsession_deserialize: (a: number, b: number, c: number) => void;
   readonly __wbg_prover_free: (a: number, b: number) => void;
   readonly prover_new: (a: number) => number;
   readonly prover_setup: (a: number, b: number, c: number) => number;
@@ -178,9 +193,7 @@ export interface InitOutput {
   readonly verifier_connect: (a: number, b: number, c: number) => number;
   readonly verifier_verify: (a: number) => number;
   readonly init_logging: (a: number) => void;
-  readonly __wbg_signedsession_free: (a: number, b: number) => void;
-  readonly signedsession_serialize: (a: number, b: number) => void;
-  readonly signedsession_deserialize: (a: number, b: number, c: number) => void;
+  readonly verify_attestation_document: (a: number) => number;
   readonly __wbg_wbg_rayon_poolbuilder_free: (a: number, b: number) => void;
   readonly wbg_rayon_poolbuilder_numThreads: (a: number) => number;
   readonly wbg_rayon_poolbuilder_receiver: (a: number) => number;
@@ -192,8 +205,8 @@ export interface InitOutput {
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_3: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h1d5239944b45b93e: (a: number, b: number, c: number) => void;
-  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3686caa49ed0826c: (a: number, b: number) => void;
+  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h90d9ff6817c35efd: (a: number, b: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h51e2711216d54afb: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3aa72816e3d00947: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h8110c30f8309ea7f: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
