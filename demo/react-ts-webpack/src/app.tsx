@@ -29,7 +29,6 @@ function App(): ReactElement {
   const [proofHex, setProofHex] = useState<null | string>(null);
   const [remoteAttestation, setRemoteAttestation] =
     useState<null | RemoteAttestation>(null);
-  const { dns, headers, method, url, body } = requests['swapi'];
 
   const [error, setError] = useState<null | string>(null);
 
@@ -46,7 +45,7 @@ function App(): ReactElement {
     if (!resultVerify) {
       setError('remote attestation signature is not valid');
     }
-    //verify x509 certificate
+
     setResultVerify(resultVerify);
     setProcessing(false);
   };
@@ -138,7 +137,9 @@ function App(): ReactElement {
         {remoteAttestation && (
           <p>
             decoded remote attestation{' '}
-            {JSON.stringify(remoteAttestation, null, 2)}{' '}
+            <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
+              {JSON.stringify(remoteAttestation, null, 2)}
+            </div>
           </p>
         )}
 
@@ -150,7 +151,18 @@ function App(): ReactElement {
         )}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        {processing && <p>Processing...</p>}
+        {processing && (
+          <p>
+            Processing...{' '}
+            <Watch
+              visible={true}
+              height="40"
+              width="40"
+              radius="48"
+              color="#000000"
+            />
+          </p>
+        )}
       </div>
       {/* <div>
         <button
