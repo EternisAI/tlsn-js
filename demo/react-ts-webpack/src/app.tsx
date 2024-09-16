@@ -11,7 +11,7 @@ import {
   RemoteAttestation,
 } from 'tlsn-js';
 import { requests } from './requests';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, RefreshCw, XCircle } from 'lucide-react';
 import './app.css';
 
 const { init, Prover, SignedSession, TlsProof, verify_attestation }: any =
@@ -123,63 +123,80 @@ function App(): ReactElement {
     })();
   }, [proofHex, setResult]);
 
+  const handleRefresh = () => {
+    //setVerificationResult(null);
+  };
+
   return (
     <div>
-      <div>
-        <button
-          className="inline-flex items-center justify-center px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-          onClick={verify_attestation_document}
-        >
-          Verify
-        </button>
-      </div>
-      <div>
-        {resultVerify !== null && (
-          <>
-            {resultVerify ? (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                <CheckCircle className="w-4 h-4 mr-1" />
-                Valid Attestation
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                Invalid Attestation
-              </span>
-            )}
-          </>
-        )}
-      </div>
-      <div>
-        <p>
-          encoded remote attestation
-          <br /> {remote_attestation_encoded.slice(0, 10)}..
-          {remote_attestation_encoded.slice(-10)}
-        </p>
-
-        {remoteAttestation && (
-          <p>
-            decoded remote attestation{' '}
-            <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
-              {JSON.stringify(remoteAttestation, null, 2)}
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+        <div className="p-8">
+          <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-1">
+            Remote Attestation Verification
+          </div>
+          <h1 className="block mt-1 text-lg leading-tight font-medium text-black">
+            Document Content
+          </h1>
+          <div className="mt-2 h-40 overflow-y-auto border border-gray-200 rounded p-4 mb-4">
+            <div>
+              <h2 className="text-l font-bold">encoded remote attestation</h2>
+              {remote_attestation_encoded.slice(0, 10)}..
+              {remote_attestation_encoded.slice(-10)}
             </div>
-          </p>
-        )}
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {processing && (
-          <p>
-            Processing...{' '}
-            <Watch
-              visible={true}
-              height="40"
-              width="40"
-              radius="48"
-              color="#000000"
-            />
-          </p>
-        )}
+            {remoteAttestation && (
+              <div>
+                <h2>decoded remote attestation</h2>
+                {JSON.stringify(remoteAttestation, null, 2)}
+              </div>
+            )}
+          </div>
+          <div className="flex justify-between items-center mb-4">
+            <button
+              onClick={verify_attestation_document}
+              disabled={processing}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            >
+              {processing ? (
+                <>
+                  <RefreshCw className="animate-spin -ml-1 mr-2 h-5 w-5" />
+                  Verifying...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="mr-2 h-5 w-5" />
+                  Verify
+                </>
+              )}
+            </button>
+            <button
+              onClick={handleRefresh}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center"
+            >
+              <RefreshCw className="mr-2 h-5 w-5" />
+              Refresh
+            </button>
+          </div>
+          {resultVerify !== null && (
+            <div
+              className={`mt-4 p-4 rounded-md ${resultVerify ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+            >
+              <div className="flex items-center">
+                {resultVerify ? (
+                  <CheckCircle className="h-5 w-5 mr-2" />
+                ) : (
+                  <XCircle className="h-5 w-5 mr-2" />
+                )}
+                <span className="font-medium">
+                  {resultVerify ? 'Document is valid' : 'Document is invalid'}
+                  {!resultVerify && <p>Error: {error}</p>}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
       {/* <div>
         <button
           id="start-demo"
