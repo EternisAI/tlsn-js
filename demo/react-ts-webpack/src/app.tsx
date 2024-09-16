@@ -11,6 +11,9 @@ import {
   RemoteAttestation,
 } from 'tlsn-js';
 import { requests } from './requests';
+import { CheckCircle } from 'lucide-react';
+import './app.css';
+
 const { init, Prover, SignedSession, TlsProof, verify_attestation }: any =
   Comlink.wrap(new Worker(new URL('./worker.ts', import.meta.url)));
 
@@ -123,9 +126,28 @@ function App(): ReactElement {
   return (
     <div>
       <div>
-        <button onClick={verify_attestation_document}>
-          Verify attestation document
+        <button
+          className="inline-flex items-center justify-center px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+          onClick={verify_attestation_document}
+        >
+          Verify
         </button>
+      </div>
+      <div>
+        {resultVerify !== null && (
+          <>
+            {resultVerify ? (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                <CheckCircle className="w-4 h-4 mr-1" />
+                Valid Attestation
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                Invalid Attestation
+              </span>
+            )}
+          </>
+        )}
       </div>
       <div>
         <p>
@@ -143,12 +165,6 @@ function App(): ReactElement {
           </p>
         )}
 
-        {resultVerify !== null && (
-          <p>
-            Remote attestation is{' '}
-            {resultVerify ? 'valid ✅  ' : ' not valid ❌'}
-          </p>
-        )}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         {processing && (
