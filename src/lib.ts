@@ -34,8 +34,16 @@ function debug(...args: any[]) {
 export type { RemoteAttestation };
 export { decodeCbor, decodeCborAll, generateNonce };
 
-export async function verify_attestation(remote_attestation_base64: string) {
-  return await verify_attestation_document(remote_attestation_base64);
+export async function verify_attestation(
+  remote_attestation_base64: string,
+  nonce: string,
+) {
+  const currentTimestampUnix = Math.floor(Date.now() / 1000);
+  return await verify_attestation_document(
+    remote_attestation_base64,
+    nonce,
+    BigInt(currentTimestampUnix),
+  );
 }
 
 export default async function init(config?: {
