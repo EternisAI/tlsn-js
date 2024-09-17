@@ -38,6 +38,10 @@ export async function verify_attestation(
   remote_attestation_base64: string,
   nonce: string,
 ) {
+  console.log('remote_attestation_base64', remote_attestation_base64);
+  const uintRemoteAtt = Uint8Array.from(
+    Buffer.from(remote_attestation_base64, 'base64'),
+  );
   const currentTimestampUnix = Math.floor(Date.now() / 1000);
   return await verify_attestation_document(
     remote_attestation_base64,

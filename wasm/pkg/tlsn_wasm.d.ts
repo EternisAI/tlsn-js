@@ -182,6 +182,11 @@ export class wbg_rayon_PoolBuilder {
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
+  readonly __wbg_prover_free: (a: number, b: number) => void;
+  readonly prover_new: (a: number) => number;
+  readonly prover_setup: (a: number, b: number, c: number) => number;
+  readonly prover_send_request: (a: number, b: number, c: number, d: number) => number;
+  readonly prover_notarize: (a: number) => number;
   readonly __wbg_verifier_free: (a: number, b: number) => void;
   readonly verifier_new: (a: number) => number;
   readonly verifier_connect: (a: number, b: number, c: number) => number;
@@ -191,11 +196,6 @@ export interface InitOutput {
   readonly __wbg_signedsession_free: (a: number, b: number) => void;
   readonly signedsession_serialize: (a: number, b: number) => void;
   readonly signedsession_deserialize: (a: number, b: number, c: number) => void;
-  readonly __wbg_prover_free: (a: number, b: number) => void;
-  readonly prover_new: (a: number) => number;
-  readonly prover_setup: (a: number, b: number, c: number) => number;
-  readonly prover_send_request: (a: number, b: number, c: number, d: number) => number;
-  readonly prover_notarize: (a: number) => number;
   readonly __wbg_wbg_rayon_poolbuilder_free: (a: number, b: number) => void;
   readonly wbg_rayon_poolbuilder_numThreads: (a: number) => number;
   readonly wbg_rayon_poolbuilder_receiver: (a: number) => number;

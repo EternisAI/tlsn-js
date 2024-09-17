@@ -23,28 +23,6 @@ export interface Payload {
   nonce: string | null;
 }
 
-// //@todo chaincerts is harcoded rn but can be extracted from remote attestation cabundle actually.
-// //Only the root CA should be saved or downloaded from aws.
-// export function verifyx509Certificate(certificateBytes: Uint8Array) {
-//   // Add PEM begin and end lines
-
-//   const pemCertificate = Buffer.concat([
-//     Buffer.from(`-----BEGIN CERTIFICATE-----
-// ${Buffer.from(certificateBytes).toString('base64')}
-// -----END CERTIFICATE-----`),
-//   ]);
-//   // Parse the certificate
-//   let cert = Certificate.fromPEM(pemCertificate);
-//   for (let i = 0; i < chainCerts.length - 1; i++) {
-//     const issuer = Certificate.fromPEM(Buffer.from(chainCerts[i].Cert));
-//     if (issuer.checkSignature(cert) !== null) {
-//       return false;
-//     }
-//     cert = issuer;
-//   }
-//   return true;
-// }
-
 export function decodeCbor(base64string: string) {
   const data = Buffer.from(base64string, 'base64');
   try {
