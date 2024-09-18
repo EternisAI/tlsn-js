@@ -203,23 +203,18 @@ export class Prover {
   async notarize(): Promise<{
     signedSession: string;
     signature: string;
+    attestation: string;
+    applicationData: string;
   }> {
-    const signedSession = await this.#prover.notarize();
+    const signedSessionString = await this.#prover.notarize();
 
-    const signedSessionString = Buffer.from(signedSession.serialize()).toString(
-      'utf-8',
-    );
+    const signedSession = signedSessionString.split('\r\n');
 
-    const serializedSessionArray = signedSession.serialize();
-    const signature = arrayToHex(
-      serializedSessionArray.slice(
-        serializedSessionArray.length - 64,
-        serializedSessionArray.length,
-      ),
-    );
     return {
-      signedSession: signedSessionString,
-      signature: signature,
+      signature: signedSession[0],
+      signedSession: '',
+      attestation: signedSession[1],
+      applicationData: signedSession[2],
     };
   }
 }

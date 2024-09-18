@@ -1,14 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
+export function __wbg_verifier_free(a: number, b: number): void;
+export function verifier_new(a: number): number;
+export function verifier_connect(a: number, b: number, c: number): number;
+export function verifier_verify(a: number): number;
 export function __wbg_prover_free(a: number, b: number): void;
 export function prover_new(a: number): number;
 export function prover_setup(a: number, b: number, c: number): number;
 export function prover_send_request(a: number, b: number, c: number, d: number): number;
 export function prover_notarize(a: number): number;
-export function __wbg_verifier_free(a: number, b: number): void;
-export function verifier_new(a: number): number;
-export function verifier_connect(a: number, b: number, c: number): number;
-export function verifier_verify(a: number): number;
 export function init_logging(a: number): void;
 export function verify_attestation_document(a: number, b: number, c: number, d: number, e: number): number;
 export function __wbg_signedsession_free(a: number, b: number): void;
@@ -25,8 +25,8 @@ export const memory: WebAssembly.Memory;
 export function __wbindgen_malloc(a: number, b: number): number;
 export function __wbindgen_realloc(a: number, b: number, c: number, d: number): number;
 export const __wbindgen_export_3: WebAssembly.Table;
-export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h956e7a5f6033402f(a: number, b: number, c: number): void;
-export function _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hf93f390c3c37ed40(a: number, b: number): void;
+export function _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h79a74ccfabce7320(a: number, b: number): void;
+export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h724b2e5af0945b39(a: number, b: number, c: number): void;
 export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h7bcb088291612168(a: number, b: number, c: number): void;
 export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6a742eee6024db4b(a: number, b: number, c: number): void;
 export function __wbindgen_add_to_stack_pointer(a: number): number;
