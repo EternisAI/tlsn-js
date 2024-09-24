@@ -5,6 +5,7 @@ import initWasm, {
   LoggingConfig,
   SignedSession as WasmSignedSession,
   Transcript,
+  verify_attestation_document,
   type Commit,
   type Reveal,
   Verifier as WasmVerifier,
@@ -22,6 +23,53 @@ function debug(...args: any[]) {
   if (['Debug', 'Trace'].includes(LOGGING_LEVEL)) {
     console.log('tlsn-js DEBUG', ...args);
   }
+}
+
+export interface RemoteAttestation {
+  protected: string;
+  payload: string;
+  signature: string;
+  certificate: string;
+  payload_object: Payload;
+}
+
+export interface Payload {
+  module_id: string;
+  timestamp: number;
+  digest: string;
+  pcrs: Map<number, string>;
+  certificate: Uint8Array;
+  cabundle: Uint8Array[];
+  public_key: Buffer;
+  user_data: Uint8Array | null;
+  nonce: string | null;
+}
+
+/**
+ * It generates a random nonce of length 40 using hexadecimal characters.
+ * This nonce is used to ensure the uniqueness of the attestation.
+ * @returns {string} The generated nonce.
+ */
+
+export function generateNonce() {
+  return Array.from({ length: 40 }, () =>
+    Math.floor(Math.random() * 16).toString(16),
+  ).join('');
+}
+
+export async function verify_attestation(
+  remote_attestation_base64: string,
+  nonce: string,
+  pcrs: string[],
+  timestamp: number = Math.floor(Date.now() / 1000),
+) {
+  console.log('remote_attestation_base64', remote_attestation_base64);
+  return await verify_attestation_document(
+    remote_attestation_base64,
+    nonce,
+    pcrs,
+    BigInt(timestamp),
+  );
 }
 
 export default async function init(config?: {
@@ -50,6 +98,8 @@ export default async function init(config?: {
 
   await initThreadPool(hardwareConcurrency);
   debug('initialized thread pool');
+
+  return true;
 }
 
 export class Prover {
@@ -175,23 +225,18 @@ export class Prover {
   async notarize(): Promise<{
     signedSession: string;
     signature: string;
+    attestation: string;
+    applicationData: string;
   }> {
-    const signedSession = await this.#prover.notarize();
+    const signedSessionString = await this.#prover.notarize();
 
-    const signedSessionString = Buffer.from(signedSession.serialize()).toString(
-      'utf-8',
-    );
+    const signedSession = signedSessionString.split('\r\n');
 
-    const serializedSessionArray = signedSession.serialize();
-    const signature = arrayToHex(
-      serializedSessionArray.slice(
-        serializedSessionArray.length - 64,
-        serializedSessionArray.length,
-      ),
-    );
     return {
-      signedSession: signedSessionString,
-      signature: signature,
+      signature: signedSession[0],
+      signedSession: '',
+      attestation: signedSession[1],
+      applicationData: signedSession[2],
     };
   }
 }
