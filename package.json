@@ -1,8 +1,8 @@
 {
-  "name": "tlsn-js",
-  "version": "v0.1.0-alpha.6.2",
-  "description": "",
-  "repository": "https://github.com/tlsnotary/tlsn-js",
+  "name": "@eternis/tlsn-js",
+  "version": "v0.1.0",
+  "description": "JS library for TLS Notary",
+  "repository": "https://github.com/eternisai/tlsn-js",
   "main": "build/lib.js",
   "types": "build/lib.d.ts",
   "files": [
@@ -71,12 +71,5 @@
   "license": "ISC",
   "engines": {
     "node": ">= 16.20.2"
-  },
-  "dependencies": {
-    "@sardinefish/x509": "^1.2.1",
-    "@types/node": "^22.5.4",
-    "cbor-web": "^9.0.2",
-    "crypto-js": "^4.2.0",
-    "vm-browserify": "^1.1.2"
   }
 }
