@@ -18,9 +18,7 @@ import { arrayToHex, expect, headerToMap } from './utils';
 import type { ParsedTranscriptData, ProofData } from './types';
 
 import {
-  decodeCbor,
   RemoteAttestation,
-  decodeCborAll,
   generateNonce,
 } from './remote-attestation/remote-attestation';
 
@@ -32,11 +30,12 @@ function debug(...args: any[]) {
   }
 }
 export type { RemoteAttestation };
-export { decodeCbor, decodeCborAll, generateNonce };
+export { generateNonce };
 
 export async function verify_attestation(
   remote_attestation_base64: string,
   nonce: string,
+  pcrs: string[],
 ) {
   console.log('remote_attestation_base64', remote_attestation_base64);
   const uintRemoteAtt = Uint8Array.from(
@@ -46,6 +45,7 @@ export async function verify_attestation(
   return await verify_attestation_document(
     remote_attestation_base64,
     nonce,
+    pcrs,
     BigInt(currentTimestampUnix),
   );
 }
