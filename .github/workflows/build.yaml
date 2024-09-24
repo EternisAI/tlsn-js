@@ -1,12 +1,10 @@
-name: build
+name: CI/CD
 
 on:
   push:
     branches: [ main ]
   pull_request:
 
-env:
-  PUPPETEER_SKIP_DOWNLOAD: true
 
 jobs:
   build:
