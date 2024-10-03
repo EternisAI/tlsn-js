@@ -30,6 +30,28 @@ export function initThreadPool(num_threads: number): Promise<any>;
 * @param {number} receiver
 */
 export function wbg_rayon_start_worker(receiver: number): void;
+export interface AttestationDocument {
+    protected: string | undefined;
+    signature: string | undefined;
+    payload: string | undefined;
+    certificate: string | undefined;
+}
+
+export interface CrateLogFilter {
+    level: LoggingLevel;
+    name: string;
+}
+
+export interface LoggingConfig {
+    level: LoggingLevel | undefined;
+    crate_filters: CrateLogFilter[] | undefined;
+    span_events: SpanEvent[] | undefined;
+}
+
+export type SpanEvent = "New" | "Close" | "Active";
+
+export type LoggingLevel = "Trace" | "Debug" | "Info" | "Warn" | "Error";
+
 export type Body = JsonValue;
 
 export type Method = "GET" | "POST" | "PUT" | "DELETE";
@@ -221,9 +243,16 @@ export interface InitOutput {
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2671cbc0901c80c4: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3b9a615bfc2738d7: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6a742eee6024db4b: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h96728411778c10ca: (a: number, b: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2671cbc0901c80c4: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3b9a615bfc2738d7: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6a742eee6024db4b: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke2_mut__h303606e24dd049f3: (a: number, b: number, c: number, d: number) => void;
+  readonly __wbindgen_thread_destroy: (a?: number, b?: number, c?: number) => void;
+  readonly __wbindgen_start: (a: number) => void;
   readonly wasm_bindgen__convert__closures__invoke2_mut__h303606e24dd049f3: (a: number, b: number, c: number, d: number) => void;
   readonly __wbindgen_thread_destroy: (a?: number, b?: number, c?: number) => void;
   readonly __wbindgen_start: (a: number) => void;
@@ -236,9 +265,12 @@ export type SyncInitInput = BufferSource | WebAssembly.Module;
 *
 * @param {{ module: SyncInitInput, memory?: WebAssembly.Memory, thread_stack_size?: number }} module - Passing `SyncInitInput` directly is deprecated.
 * @param {WebAssembly.Memory} memory - Deprecated.
+* @param {{ module: SyncInitInput, memory?: WebAssembly.Memory, thread_stack_size?: number }} module - Passing `SyncInitInput` directly is deprecated.
+* @param {WebAssembly.Memory} memory - Deprecated.
 *
 * @returns {InitOutput}
 */
+export function initSync(module: { module: SyncInitInput, memory?: WebAssembly.Memory, thread_stack_size?: number } | SyncInitInput, memory?: WebAssembly.Memory): InitOutput;
 export function initSync(module: { module: SyncInitInput, memory?: WebAssembly.Memory, thread_stack_size?: number } | SyncInitInput, memory?: WebAssembly.Memory): InitOutput;
 
 /**
@@ -247,7 +279,10 @@ export function initSync(module: { module: SyncInitInput, memory?: WebAssembly.M
 *
 * @param {{ module_or_path: InitInput | Promise<InitInput>, memory?: WebAssembly.Memory, thread_stack_size?: number }} module_or_path - Passing `InitInput` directly is deprecated.
 * @param {WebAssembly.Memory} memory - Deprecated.
+* @param {{ module_or_path: InitInput | Promise<InitInput>, memory?: WebAssembly.Memory, thread_stack_size?: number }} module_or_path - Passing `InitInput` directly is deprecated.
+* @param {WebAssembly.Memory} memory - Deprecated.
 *
 * @returns {Promise<InitOutput>}
 */
+export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput>, memory?: WebAssembly.Memory, thread_stack_size?: number } | InitInput | Promise<InitInput>, memory?: WebAssembly.Memory): Promise<InitOutput>;
 export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput>, memory?: WebAssembly.Memory, thread_stack_size?: number } | InitInput | Promise<InitInput>, memory?: WebAssembly.Memory): Promise<InitOutput>;

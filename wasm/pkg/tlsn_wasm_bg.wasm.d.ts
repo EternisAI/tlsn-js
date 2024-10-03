@@ -30,9 +30,16 @@ export function _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__
 export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2671cbc0901c80c4(a: number, b: number, c: number): void;
 export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3b9a615bfc2738d7(a: number, b: number, c: number): void;
 export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6a742eee6024db4b(a: number, b: number, c: number): void;
+export function _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h96728411778c10ca(a: number, b: number): void;
+export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2671cbc0901c80c4(a: number, b: number, c: number): void;
+export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3b9a615bfc2738d7(a: number, b: number, c: number): void;
+export function _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6a742eee6024db4b(a: number, b: number, c: number): void;
 export function __wbindgen_add_to_stack_pointer(a: number): number;
 export function __wbindgen_free(a: number, b: number, c: number): void;
 export function __wbindgen_exn_store(a: number): void;
+export function wasm_bindgen__convert__closures__invoke2_mut__h303606e24dd049f3(a: number, b: number, c: number, d: number): void;
+export function __wbindgen_thread_destroy(a: number, b: number, c: number): void;
+export function __wbindgen_start(a: number): void;
 export function wasm_bindgen__convert__closures__invoke2_mut__h303606e24dd049f3(a: number, b: number, c: number, d: number): void;
 export function __wbindgen_thread_destroy(a: number, b: number, c: number): void;
 export function __wbindgen_start(a: number): void;
